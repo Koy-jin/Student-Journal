@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Тестовая страница</title>
+    </head>
+    <body>
+    <nav>
+        <h3><button id="btn-log-out">Log out</button></h3>
+        <button id="btn-nav-journal">Журнал</button>
+        <button id="btn-nav-users">Управление пользователям</button>
+        <button id="btn-nav-groups">Управление группами</button>
+        <button id="btn-nav-subjects">Управление предметами</button>
+        <script src="admin_btn_nav.js"></script>
+    </nav>
+    <main>
+        <nav id="nav-user">
+            <text id="text-no-user">Ещё нет ниодного пользователя</text>
+            <button id="btn-create-user">Добавить пользователя</button>
+            <div id="user-add-form">
+                <div class="from-group">
+                    <text>Логин</text>
+                    <input id="input-login" type="text" maxlength="12">
+                    <snap class="error-message" id="error-login"></snap>
+                </div>
+                <div class="from-group">
+                    <text>Пароль</text>
+                    <input id="input-password" type="text" maxlength="25">
+                    <snap class="error-message" id="error-password"></snap>
+                </div>
+                <div class="from-group">
+                    <text>ФИО</text>
+                    <input id="input-name" type="text" maxlength="12">
+                    <snap class="error-massage" id="error-name"></snap>
+                </div>
+                <label id="label-group">Выберити группу</label>
+                <select id="select-group">
+                    <option id="option-N/a" value="N/a">N/a</option>
+                    <option id="1" value="1">1</option>
+                </select>
+                <label id="label-role">Роль</label>
+                <select id="select-role">
+                    <option value="student">Студен</option>
+                    <option value="admin">Администратор</option>
+                    <option value="teacher">Преподаватель</option>
+                </select>
+                <button id="btn-add-user">Добавить пользователя</button>
+            </div>
+        </nav>
+        <div>
+            <table id="table-student-list">
+                <thead>
+                <tr></tr>
+                    <td>Имя</td>
+                    <td>Группа</td>
+                    <td>Права</td>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <script src="admin_users.js"></script>
+    </main>
+    </body>
+</html>

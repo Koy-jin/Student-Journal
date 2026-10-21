@@ -1,0 +1,46 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Тестовая страница</title>
+    </head>
+    <body>
+    <nav>
+        <h3><button id="btn-log-out">Log out</button></h3>
+        <button id="btn-nav-journal">Журнал</button>
+        <button id="btn-nav-users">Управление пользователям</button>
+        <button id="btn-nav-groups">Управление группами</button>
+        <button id="btn-nav-subjects">Управление предметами</button>
+        <script src="admin_btn_nav.js"></script>
+    </nav>
+    <main>
+        <nav id="nav-subject">
+            <label>Выберите группу:</label>
+            <select id="select-group">
+                <option value="N/A">N/A</option>
+            </select>
+            <div id="div-edd">
+                <button id="btn-open-add-topic">Добавить тему занятий</button>
+                <button id="btn-marks-edit"> Редактировать оценку</button>
+                <button id="btn-marks-edit-push">Сохронить</button>
+            </div>
+            <form id="topic-form">
+                <div id="nav-block-add-topic">
+                    <input type="text" id="input-add-topic">
+                    <button type="submit" id="btn-add-topic">Добавить</button>
+                    <button type="button" id="btn-add-topic1">отмена</button>
+                </div>
+            </form>
+        </nav>
+
+        <div id="div-switcher-subject-btn"></div>
+        <table id="table">
+            <thead id="th-headers">
+            </thead>
+            <tbody id="tbody-students"></tbody>
+        </table>
+        <script src="admin_journals.js" defer></script>
+    </main>
+
+    </body>
+</html>
