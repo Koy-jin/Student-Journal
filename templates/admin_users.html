@@ -3,48 +3,50 @@
     <head>
         <meta charset="utf-8"/>
         <title>Тестовая страница</title>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
     <nav>
-        <h3><button id="btn-log-out">Log out</button></h3>
-        <button id="btn-nav-journal">Журнал</button>
-        <button id="btn-nav-users">Управление пользователям</button>
-        <button id="btn-nav-groups">Управление группами</button>
-        <button id="btn-nav-subjects">Управление предметами</button>
+        <button class="btn-nav-log-out" id="btn-log-out" style="display: block;">Log out</button>
+        <button class="btn-nav"  id="btn-nav-journal">Журнал</button>
+        <button class="current-op" id="btn-nav-subjects" disabled>Управление пользователям</button>
+        <button class="btn-nav"  id="btn-nav-groups">Управление группами</button>
+        <button class="btn-nav"  id="btn-nav-subjects">Управление предметами</button>
         <script src="admin_btn_nav.js"></script>
     </nav>
     <main>
         <nav id="nav-user">
-            <text id="text-no-user">Ещё нет ниодного пользователя</text>
-            <button id="btn-create-user">Добавить пользователя</button>
+            <text id="text-no-user" style="display: block;">Пользователи не созданы </text>
+            <div id="btn-option">
+                <button class="btn-m-options" id="btn-create-user">Добавить пользователя</button>
+                <button class="btn-m-options" id="btn-edit-users">Редактировать пользователей</button>
+            </div>
+            <div id="btns-push-options" style="display: none;">
+                <button class="btn-m-options" id="btn-push" >Принять правки</button> 
+                <button class="btn-m-options" id="btn-edit-cancel">Отмена</button>
+            </div>
             <div id="user-add-form">
                 <div class="from-group">
                     <text>Логин</text>
-                    <input id="input-login" type="text" maxlength="12">
+                    <input style="margin-left: 8px;" id="input-login" type="text" maxlength="12">
                     <snap class="error-message" id="error-login"></snap>
                 </div>
                 <div class="from-group">
                     <text>Пароль</text>
-                    <input id="input-password" type="text" maxlength="25">
+                    <input id="input-password" type="password" maxlength="25">
                     <snap class="error-message" id="error-password"></snap>
                 </div>
                 <div class="from-group">
                     <text>ФИО</text>
-                    <input id="input-name" type="text" maxlength="12">
+                    <input style="margin-left: 14px;" id="input-name" type="text" maxlength="255">
                     <snap class="error-massage" id="error-name"></snap>
                 </div>
                 <label id="label-group">Выберити группу</label>
-                <select id="select-group">
-                    <option id="option-N/a" value="N/a">N/a</option>
-                    <option id="1" value="1">1</option>
-                </select>
+                <select id="select-group"></select>
                 <label id="label-role">Роль</label>
-                <select id="select-role">
-                    <option value="student">Студен</option>
-                    <option value="admin">Администратор</option>
-                    <option value="teacher">Преподаватель</option>
-                </select>
-                <button id="btn-add-user">Добавить пользователя</button>
+                <select id="select-role"></select>
+                <button class="btn-m-options" id="btn-add-user">Создать</button>
+                <button class="btn-m-options" class="cancel" id="btn-cancel-user">Отмена</button>
             </div>
         </nav>
         <div>
@@ -55,7 +57,7 @@
                     <td>Группа</td>
                     <td>Права</td>
                 </thead>
-                <tbody></tbody>
+                <tbody id="tb-user"></tbody>
             </table>
         </div>
         <script src="admin_users.js"></script>

@@ -1,0 +1,190 @@
+nav {   
+    border: 2px solid rgba(77, 150, 176, 0.377);
+    background-color: rgba(77, 150, 176, 0.377);
+    padding-left: 10px ;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    
+}
+
+td {
+   padding: 6px; 
+   border: 2px solid rgba(88, 131, 131, 0.467);
+   border-radius: 5%;
+   background-color: rgba(246, 246, 246, 0.629);
+   margin: auto;
+   color: rgb(5, 40, 59);
+}
+
+.nav-admin {
+    background-color: rgba(77, 150, 176, 0.377);
+    padding-left: 10px ;
+    padding-bottom: 8px;
+
+}
+.btn-nav {
+    border-radius: 0.375rem;
+    padding: 0.5%;
+    border: 2px solid rgba(14, 98, 98, 0.467);
+    background-color: rgba(66, 214, 240, 0.377);
+    color: rgb(0, 0, 0);
+}
+.btn-nav-log-out {
+    margin-left: auto;
+    margin-top: 4px;
+    margin-right: 10px;
+    width: 60px;
+    height: 30px;
+    border-radius: 0.375rem;
+    border: 2px solid rgba(197, 253, 253, 0.467);
+    background-color: rgba(160, 205, 205, 0.467);
+}
+.btn-nav-log-out:hover{
+    background-color: rgba(14, 98, 98, 0.467) ;
+    border-color: rgba(66, 214, 240, 0.377);
+    color: black;
+    transition: background-color 0.15s ease-in-out;
+    transition: border-color 0.25s ease-in-out;
+}
+.switcher {
+    margin-top: 1px;
+    margin-left: 2px;
+    margin-bottom: 1px;
+    border-radius: 0.375rem;
+    border: 2px solid rgba(14, 98, 98, 0.467);
+    background-color: rgba(66, 214, 240, 0.377);
+}
+.btn-m-options{
+    border-radius: 0.375rem;
+    border: 2px solid rgba(197, 253, 253, 0.467);
+    background-color: rgba(160, 205, 205, 0.467);
+}
+.btn-m-options:hover{
+    background-color: rgba(14, 98, 98, 0.467) ;
+    border-color: rgba(66, 214, 240, 0.377);
+    color: black;
+    transition: background-color 0.15s ease-in-out;
+    transition: border-color 0.25s ease-in-out;
+}
+.switcher:hover{
+    background-color: rgba(14, 98, 98, 0.467) ;
+    border-color: rgba(66, 214, 240, 0.377);
+    color: black;
+    transition: background-color 0.15s ease-in-out;
+    transition: border-color 0.25s ease-in-out;
+}
+.cancel{
+    border-radius: 0.375rem;
+    border: 2px solid rgba(197, 253, 253, 0.467);
+    background-color: rgba(160, 205, 205, 0.467);
+}
+.cancel:hover{
+    background-color: rgba(14, 98, 98, 0.467) ;
+    border-color: rgba(66, 214, 240, 0.377);
+    color: black;
+    transition: background-color 0.15s ease-in-out;
+    transition: border-color 0.25s ease-in-out;
+}
+select:hover {
+    background-color: rgba(14, 98, 98, 0.467) ;
+    border-color: rgba(66, 214, 240, 0.377);
+    color: black;
+    transition: background-color 0.15s ease-in-out;
+    transition: border-color 0.25s ease-in-out;
+}
+.btn-nav:hover{
+    background-color: rgba(14, 98, 98, 0.467) ;
+    border-color: rgba(66, 214, 240, 0.377);
+    color: black;
+    transition: background-color 0.15s ease-in-out;
+    transition: border-color 0.25s ease-in-out;
+}
+main {
+    background-color:rgba(77, 150, 176, 0.377);
+    border: 2px solid rgba(77, 150, 176, 0.377);
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 2px;
+}
+
+select {
+    background-color: rgb(244, 242, 238);
+    border-radius: 0.375rem;
+}
+body {
+    background-color:  rgb(44, 85, 100);
+    margin-left: 25%;
+    margin-right: 25%;
+  
+    
+}
+.div-journal {
+    border: 2px solid rgba(77, 150, 176, 0.377);
+    padding: 10px;
+    margin-top: 2px;
+}
+
+table {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+input {
+    border: 3px solid rgba(56, 110, 129, 0.377);
+    background-color: rgb(231, 247, 253);
+}
+
+
+.m-login{
+    height: 114px;
+    width: 280px;
+    margin-top: 25%;
+    margin-left: 25%;
+    margin-right: 390px;
+    position: relative;
+}
+.btn-m-login{
+    border-radius: 0.375rem;
+    border: 2px solid rgba(197, 253, 253, 0.467);
+    background-color: rgba(160, 205, 205, 0.467);
+     position: absolute;
+    left: 230px;            
+    top: 105px;           
+    transform: translateY(-50%);
+
+}
+
+.btn-m-login:hover {
+    background-color: rgba(14, 98, 98, 0.467) ;
+    border-color: rgba(66, 214, 240, 0.377);
+    color: black;
+    transition: background-color 0.15s ease-in-out;
+    transition: border-color 0.25s ease-in-out;
+
+}
+.from-group{
+    padding-top: 2px;
+    
+}
+.btn-delete-x{
+    color: red;
+    background-color: rgba(240, 248, 255, 0);
+    border-color: rgba(66, 214, 240, 0);
+}
+.btn-delete-x:hover{
+    color: rgb(132, 0, 0);
+    
+}
+.delete-cell{
+    background-color: rgba(240, 248, 255, 0);
+    border-color: rgba(66, 214, 240, 0);
+}
+.current-op{
+    border-radius: 0.375rem;
+    padding: 0.5%;
+    background-color: rgba(14, 98, 98, 0.467) ;
+    border-color: rgba(66, 214, 240, 0.377);
+    color: black;
+}
+

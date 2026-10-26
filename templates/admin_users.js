@@ -1,6 +1,6 @@
 const btn_add_user = document.getElementById("btn-create-user");
 const main_menu = document.getElementById("nav-user");
-const text = document.getElementById("text-no-user");
+const text_allert = document.getElementById("text-no-user");
 const user_create_menu = document.getElementById("user-add-form");
 
 const select_group = document.getElementById("select-group");
@@ -10,68 +10,58 @@ const login = document.getElementById("input-login");
 const password = document.getElementById("input-password");
 const name = document.getElementById("input-name");
 
+
+let G_LIST = {};
 user_create_menu.style.display = "none";
+drawRoleSelector(select_role);
 
-document.addEventListener("click", event => {
-    const btn_target = event.target;
-
-   if (btn_target.id === "btn-create-user"){
-        text.style.display = "none";
-        user_create_menu.style.display = "block";
-        btn_add_user.style.display = "none";
-
-   }
-});
 
 
 document.addEventListener('click', event => {
+        const div_m_btns = document.getElementById('btn-option');
+        const div_options = document.getElementById('btns-push-options');
+// Доработать аллерты
 
-// Дораьотать аллерты
+    if (event.target.id === "btn-create-user"){
+        user_create_menu.style.display = "block";
+        div_m_btns.style.display = "none";
+
+   }
     if (event.target.id === "btn-add-user"){
-
-
         const latinOnly = /^[a-zA-z0-9]+$/;
         const cyrillicOnly = /^[а-яА-ЯёЁ\s-]+$/;
         const hasNumber = /\d/;
-
         let isValid = true;
-
-
         if (login.value.length === 0) {
             showError(login, "#error-login", "Поле обязательно к заполнению")
             isValid = false
         } else {
             showError(login, "#error-login","");
         }
-
         if (password.value.length === 0) {
             showError(password, "#error-password", "Поле обязательно к заполнению")
             isValid = false
         } else {
             showError(password, "#error-password","");
         }
-
         if (name.value.length === 0) {
             showError(name, "#error-name", "Поле обязательно к заполнению")
             isValid = false
         } else {
             showError(name, "#error-name","");
         }
-
         if (!latinOnly.test(login.value)){
             showError(login, "#error-login", "Логин должен состоять из латинских символов" );
             isValid = false
         } else {
             showError(login, "#error-login", "");
         }
-
         if (login.value.length < 4){
             showError(login, "#error-login", "Логин должен состоять хотя бы из 4 символов" );
             isValid = false
         } else {
             showError(login, "#error-login", "");
         }
-
         if (!latinOnly.test(password.value)){
             showError(password, "#error-password", "Пароль должен состоять из латинских символов" );
             isValid = false
@@ -90,7 +80,6 @@ document.addEventListener('click', event => {
         } else {
             showError(password, "#error-password", "");
         }
-
         if (!cyrillicOnly.test(name.value)){
             showError(name, "#error-name", "ФИО должно стостоять только из кирилических символов" );
             isValid = false
@@ -98,13 +87,18 @@ document.addEventListener('click', event => {
             showError(name, "#error-name", "");
         }
 
-
         if (isValid){
             send_login = login.value;
             send_password = password.value;
             send_name = name.value;
             send_role = select_role.value;
             send_group = select_group.value;
+            if (send_group === "0" || send_group === 0){
+                send_group = null
+            }
+            if (send_role === "admin" || select_role === "teacher"){
+                send_group = null
+            }
             addUser(send_login, send_password, send_name, send_role, send_group);
 
             login.value = "";
@@ -114,33 +108,65 @@ document.addEventListener('click', event => {
             name.value = "";
             name.textContent = "";
             user_create_menu.style.display = "none";
-            btn_add_user.style.display = "block";
-            console.log("ERROR")
+            div_m_btns.style.display = "block";
         }
 
     }
-});
-
-document.addEventListener('click', event =>{
-    if (event.target === document.documentElement || event.target === document.body ){
-        text.style.display = "block";
+    if (event.target.className === "btn-delete-x"){
+        const btn_id = event.target.id;
+        const u_id = btn_id.split("-")[1];
+        userDelete(u_id);
+    }
+    if (event.target.id === "btn-cancel-user"){
         user_create_menu.style.display = "none";
-        btn_add_user.style.display = "block";
-        login.value = "";
-        password.value = "";
-        name.value = "";
+        div_m_btns.style.display = "block";
+    }
+    if (event.target.id === "btn-edit-users"){
+        div_m_btns.style.display = 'none';
+        div_options.style.display = 'block';
+        const r_select = document.querySelectorAll('.slct-r');
+        r_select.forEach( select => {
+            select.disabled = false;
+        })
+        const g_select = document.querySelectorAll('.slct-g');
+        g_select.forEach( select => {
+            select.disabled = false;
+        })
+    }
+
+    if (event.target.id === "btn-edit-cancel"){
+        div_m_btns.style.display = 'block';
+        div_options.style.display = 'none';
+        getAllUsers();
+    }
+    
+    if (event.target.id === "btn-push"){
+        const data = [];
+        const tb_users = document.getElementById('tb-user');
+        div_m_btns.style.display = 'block';
+        div_options.style.display = 'none';
+        Array.from(tb_users.rows).forEach( row => {
+            u_id = row.id
+            g_id = row.cells[1].children[0].value,
+            r = row.cells[2].children[0].value
+            if (g_id === '0' ){
+                g_id = null;
+            }
+            if (r === "admin" || r ==="teacher"){
+                g_id = null;
+            }
+            data.push({
+                id: u_id,
+                group_id: g_id,   
+                role: r 
+            });
+        })
+        console.log(data, "asdasdfasd");
+        usersDataUpdate(data);
     }
 });
 
-/*document.addEventListener("change", (event) => {
-    if (select_role.value === "admin" || select_role.value === "teacher"){
-            select_group.option = "N/a";
-        } else {
-            select_group.value == "1";
-            select_group.textContent = "1";
-        }
-});
-*/
+
 
 function showError(inputElement, errorElementId, massage){
     const errorSnap = user_create_menu.querySelector(errorElementId);
@@ -155,7 +181,7 @@ function showError(inputElement, errorElementId, massage){
 };
 
 async function addUser(login, password, name, role, group){
-    const response = await fetch("http://127.0.0.1:8000/add_user", {
+    const response = await fetch("http://127.0.0.1:8000/user/add", {
     method: "POST",
     headers: { "Content-Type": "application/json"},
     body: JSON.stringify({logins: login, passwords: password, names: name, rols: role, groups: group})
@@ -163,59 +189,29 @@ async function addUser(login, password, name, role, group){
     const data = await response.json();
 
     if (response.ok){
-        renderNewUserRow(name, group, role);
     } else {
         alert(data.message);
     }
-
-
-   //const ans = await response.json()
+    await getAllUsers();
 };
 
 async function getAllUsers(){
-    const  response = await fetch("http://127.0.0.1:8000/getAllUsers");
+    const response = await fetch("http://127.0.0.1:8000/user/getall");
     const user_data = await response.json();
     const success = user_data.success;
     const message = user_data.message;
     const data = user_data.data;
-
-    const t_body = document.querySelector("#table-student-list tbody");
-    t_body.innerHTML = "";
-    console.log("ERROR 2")
-    for (user of data) {
-        console.log("ERROR 3")
-        const name = user.name;
-        const group = user.group;
-        const role = user.role;
-
-
-        const newRow = t_body.insertRow(-1);
-        const cell_name = newRow.insertCell(0);
-        const cell_group = newRow.insertCell(1);
-        const cell_role = newRow.insertCell(2);
-
-
-
-        cell_name.value = user.id;
-        cell_name.textContent = user.user;
-
-
-        if (user.group_name === null){
-            cell_group.textContent = "Null";
-        } else {
-            cell_group.value = user.groups_id;
-            cell_group.textContent = user.group_name;
-        }
-
-        cell_role.value = user.role;
-        cell_role.textContent = user.role;
-
+    if (data.length > 0 ){
+        text_allert.style.display = 'none';
+    } else { 
+        text_allert.style.display = 'block';
     }
-    getGroups();
+    await getGroups();
+    await drawTable(data)
 };
 
 async function getGroups(){
-    response = await fetch("http://127.0.0.1:8000/getAllGroup");
+        const response = await fetch("http://127.0.0.1:8000/group/getall");
 
         const data = await response.json();
 
@@ -223,27 +219,114 @@ async function getGroups(){
         const message = data.message;
         const groups = data.groups;
 
-        for (user of groups){
-            const option_groups = document.createElement('option');
-
-            option_groups.value = user.id;
-            option_groups.textContent = user.name;
-
-            select_group.appendChild(option_groups);
+        G_LIST = {}
+        if (groups){
+            for (user of groups){
+                G_LIST[user.id] = user.name;
+                
+            }
         }
+        console.log(G_LIST)
+        drawGroupSelector(G_LIST, select_group);
 };
 
-function renderNewUserRow(name, group, role) {
-    const tableBody = document.getElementById('table-student-list');
-    if (!tableBody) return;
+async function usersDataUpdate(data) {
+    const response = await fetch("http://127.0.0.1:8000/user/patchall", {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({users: data})
+    }); 
 
-    const newRow = document.createElement('tr');
+    await getAllUsers();
+    
+}
+async function userDelete(u_id) {
+    const response = await fetch("http://127.0.0.1:8000/user/delete",{
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({user: u_id})
+    });
+    await getAllUsers();
+}
+function drawTable(data) {
+    const tbody = document.getElementById('tb-user');
+    tbody.innerHTML = "";
+    for (const d of data){
+        const g_select = document.createElement('select');
+        const r_select = document.createElement('select');
+        g_select.className = "slct-g";
+        r_select.className = "slct-r";
+        drawGroupSelector(G_LIST, g_select);
+        drawRoleSelector(r_select);
+        const u_id = d.id;
+        const u_name = d.user;
+        const g_id = d.groups_id;
+        const g_name = d.groups_name;
+        const role = d.role;
 
-    newRow.innerHTML = `
-        <td>${name}</td>
-        <td>${group}</td>
-        <td>${role}</td>
-    `;
-    tableBody.appendChild(newRow);
+        const row = tbody.insertRow();
+        const u_name_cell = row.insertCell();
+        const g_name_cell = row.insertCell();
+        const role_cell = row.insertCell();
+        row.id = u_id;
+        u_name_cell.textContent = u_name;
+        role_cell.value = role;
+        g_name_cell.value = g_id;
+        console.log(g_id);
+        if (g_id === null){
+            g_select.value = 0;
+            
+        } else {
+            g_select.value = g_id;
+        }
+        g_name_cell.appendChild(g_select);
+
+        g_select.disabled = true;
+        r_select.value = role; 
+        role_cell.appendChild(r_select);
+        r_select.disabled = true;
+        const delete_user_cell = row.insertCell();
+        delete_user_cell.className = 'delete-cell';
+        const btn_delete_user = document.createElement("button");
+        btn_delete_user.textContent = "x";
+        btn_delete_user.id = `btn-${u_id}`;
+        btn_delete_user.className = "btn-delete-x";
+        delete_user_cell.appendChild(btn_delete_user);   
+    }
+    
+}
+
+function drawGroupSelector(g_list, slct){
+    slct.innerHTML = "";
+    for (const g in g_list){
+        const op = document.createElement('option');
+        op.id = `op-${g}`;
+        op.value = g;
+        op.textContent = g_list[g];
+        slct.appendChild(op);
+    }
+    const op_NA = document.createElement('option');
+    op_NA.value = "0";
+    op_NA.textContent = "N/A";
+    slct.appendChild(op_NA);
+}
+
+function drawRoleSelector(slct){
+    slct.innerHTML = "";
+    const admin = document.createElement("option");
+    const teacher = document.createElement("option");
+    const student = document.createElement("option");
+
+    admin.value = "admin";
+    teacher.value = "teacher";
+    student.value = "student";
+
+    admin.textContent = "Администратор";
+    teacher.textContent = "Преподаватель";
+    student.textContent = "Студент"
+    slct.appendChild(admin);
+    slct.appendChild(teacher);
+    slct.appendChild(student);
 }
 getAllUsers();
+getGroups();

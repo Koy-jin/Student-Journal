@@ -3,22 +3,37 @@
     <head>
         <meta charset="utf-8"/>
         <title>Тестовая страница</title>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
     <nav>
-        <h3><button id="btn-log-out">Log out</button></h3>
-        <button id="btn-nav-journal">Журнал</button>
-        <button id="btn-nav-users">Управление пользователям</button>
-        <button id="btn-nav-groups">Управление группами</button>
-        <button id="btn-nav-subjects">Управление предметами</button>
+        <button class="btn-nav-log-out" id="btn-log-out" style="display: block;">Log out</button>
+        <button class="btn-nav" id="btn-nav-journal">Журнал</button>
+        <button class="btn-nav" id="btn-nav-users">Управление пользователям</button>
+        <button class="btn-nav" id="btn-nav-groups">Управление группами</button>
+        <button class="current-op" id="btn-nav-subjects" disabled>Управление предметами</button>
         <script src="admin_btn_nav.js"></script>
     </nav>
     <main>
         <nav id="nav-subject">
-            <text>Ещё не сосданно ниодного предмета</text>
-            <button id="btn-create-subject">Создать предмет</button>
+            <div id="div-nav">
+                <text id="allet-text" style="display: none;">Ещё не создано ни одного предмета</text>
+                <button class="btn-m-options" id="btn-create-subject">Создать предмет</button>
+            </div>
+            <div id="div-nav-form" style="display: none;">
+                <input id="subject-name">
+                <button class="btn-m-options" id="btn-accept-subject">Добавить</button>
+                <button class="cancel" id="btn-create-cancel">Отмена</button>
+            </div>
         </nav>
-        <ol id="list-subject">Список предметов</ol>
+        
+            
+        <table id="table">
+            <thead id="th-headers">
+                Список предметов
+            </thead>
+            <tbody id="tbody-subject"></tbody>
+        </table>
         <script src="admin_subjects.js"></script>
     </main>
     </body>

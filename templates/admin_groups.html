@@ -3,14 +3,15 @@
     <head>
         <meta charset="utf-8"/>
         <title>Тестовая страница</title>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
     <nav>
-        <h3><button id="btn-log-out">Log out</button></h3>
-        <button id="btn-nav-journal">Журнал</button>
-        <button id="btn-nav-users">Управление пользователям</button>
-        <button id="btn-nav-groups">Управление группами</button>
-        <button id="btn-nav-subjects">Управление предметами</button>
+        <button class="btn-nav-log-out" id="btn-log-out" style="display: block;">Log out</button>
+        <button class="btn-nav" id="btn-nav-journal">Журнал</button>
+        <button class="btn-nav" id="btn-nav-users">Управление пользователям</button>
+        <button class="current-op" id="btn-nav-subjects" disabled>Управление группами</button>
+        <button class="btn-nav" id="btn-nav-subjects">Управление предметами</button>
         <script src="admin_btn_nav.js"></script>
     </nav>
     <main>
@@ -18,13 +19,14 @@
             <text id="text-no-one-group">Ещё не созданно не одной группы</text>
 
             <div id="div-nav-btns">
-                <button id="btn-create-group">Создать группу</button>
-                <button id="btn-add-subject-on-group">Назначить предмет</button>
+                <button class="btn-m-options"  id="btn-create-group">Создать группу</button>
+                <button class="btn-m-options"  id="btn-add-subject-on-group">Назначить предмет</button>
+                <button class="btn-m-options" id="btn-delet-group">Удалить группу</button>
             </div>
             <div id="div-add-group">
                 <input id="input-group-name"  type="text">
-                <button id="btn-add-group" >Добавить группу</button>
-                <button class="cancel">Отмена</button>
+                <button class="btn-m-options"  id="btn-add-group" >Добавить группу</button>
+                <button  class="cancel">Отмена</button>
             </div>
             <form id="courses-form">
                 <div id="div-add-subject">
@@ -32,15 +34,22 @@
                     <select id="select-group"></select>
                     <label>выберите предмет</label>
                     <select id="select-subject"></select>
-                    <button id="btn-add-courses">Добавить</button>
-                    <button type="submit" class="cancel">Отмена</button>
+                    <button class="btn-m-options"  id="btn-add-courses">Добавить</button>
+                    <button class="btn-m-options"  type="submit" class="cancel">Отмена</button>
                 </div>
             </form>
+            <div id="div-delet-group">
+                <div id="group-fro-delete" >
+                        <select id="select-for-delete"></select>
+                        <button class="btn-m-options"  id="accept-delete">Удалить</button>
+                        <button class="cancel">Отмена</button>
+                </div>
+            </div>
 
         </nav>
-        <table id="table-student-list">
-            <thead>Номер</thead>
-            <tbody></tbody>
+        <table id="table-course-list">
+            <thead>Номер группы</thead>
+            <tbody id="tbody-course-list"></tbody>
         </table>
         <script src="admin_groups.js"></script>
     </main>

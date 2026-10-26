@@ -3,14 +3,15 @@
     <head>
         <meta charset="utf-8"/>
         <title>Тестовая страница</title>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-    <nav>
-        <h3><button id="btn-log-out">Log out</button></h3>
-        <button id="btn-nav-journal">Журнал</button>
-        <button id="btn-nav-users">Управление пользователям</button>
-        <button id="btn-nav-groups">Управление группами</button>
-        <button id="btn-nav-subjects">Управление предметами</button>
+    <nav class="nav-admin">
+        <button class="btn-nav-log-out" id="btn-log-out" style="display: block;">Log out</button>
+        <button class="current-op" id="btn-nav-subjects" disabled>Журнал</button>
+        <button class="btn-nav" id="btn-nav-users">Управление пользователям</button>
+        <button class="btn-nav" id="btn-nav-groups">Управление группами</button>
+        <button class="btn-nav" id="btn-nav-subjects">Управление предметами</button>
         <script src="admin_btn_nav.js"></script>
     </nav>
     <main>
@@ -19,23 +20,32 @@
             <select id="select-group">
                 <option value="N/A">N/A</option>
             </select>
-            <div id="div-edd">
-                <button id="btn-open-add-topic">Добавить тему занятий</button>
-                <button id="btn-marks-edit"> Редактировать оценку</button>
-                <button id="btn-marks-edit-push">Сохронить</button>
-            </div>
-            <form id="topic-form">
-                <div id="nav-block-add-topic">
-                    <input type="text" id="input-add-topic">
-                    <button type="submit" id="btn-add-topic">Добавить</button>
-                    <button type="button" id="btn-add-topic1">отмена</button>
-                </div>
-            </form>
         </nav>
 
-        <div id="div-switcher-subject-btn"></div>
+        <div class="div-journal" id="div-switcher-subject-btn"></div>
+        <div class="div-journal" id="div-m-options">
+            <button class="btn-m-options" id="btn-open-add-topic">Добавить тему занятий</button>
+            <button class="btn-m-options" id="btn-delete-topic">Удалить тему занятий</button>
+            <button class="btn-m-options" id="btn-marks-edit"> Редактировать оценку</button>
+        </div>
+        <div class="div-journal" id="div-delete-form" style="display: none;">
+            <select id="select-delete-topic"></select>
+            <button class="btn-m-options" id="btn-accept-delete">Удалить</button>
+            <button class="btn-m-options" id="btn-accept-delete-cancel">Отмена</button>
+        </div>
+        <div class="div-journal" id="div-edd">
+            <button class="btn-m-options" id="btn-marks-edit-push">Сохронить</button>
+            <button class="btn-m-options" id="btn-marks-edit-cancel">Отменить</button>
+        </div>
+        <form id="topic-form">
+                <div class="div-journal" id="nav-block-add-topic">
+                    <input type="text" id="input-add-topic">
+                    <button class="btn-m-options" type="submit" id="btn-add-topic">Добавить</button>
+                    <button class="btn-m-options" type="button" id="btn-add-topic-cancel">отмена</button>
+                </div>
+        </form>
         <table id="table">
-            <thead id="th-headers">
+            <thead id="tr-headers">
             </thead>
             <tbody id="tbody-students"></tbody>
         </table>

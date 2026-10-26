@@ -2,7 +2,6 @@ const btn_create_group = document.getElementById("btn-create-group");
 const btn_add_group = document.getElementById("btn-add-group");
 const input_name = document.getElementById("input-group-name");
 const text_no_one_group = document.getElementById("text-no-one-group");
-const t_body = document.querySelector('#table-student-list tbody')
 const btn_add_subject = document.getElementById('btn-add-subject-on-group');
 
 const courses_form = document.getElementById('courses-form');
@@ -10,10 +9,17 @@ const courses_form = document.getElementById('courses-form');
 const select_group = document.getElementById('select-group');
 const select_subject = document.getElementById('select-subject');
 
-const div_nav = document.getElementById('div-nav-btns')
+const div_nav = document.getElementById('div-nav-btns');
 const div_add_subject = document.getElementById('div-add-subject');
-const div_add_group = document.getElementById('div-add-group')
+const div_add_group = document.getElementById('div-add-group');
+const table = document.getElementById('table-course-list');
+const tbody = document.getElementById('tbody-course-list');
 
+const btn_delete_group = document.getElementById('btn-delet-group');
+const delete_form = document.getElementById('group-fro-delete');
+const select_for_delet = document.getElementById('select-for-delete');
+
+delete_form.style.display = "none";
 div_add_group.style.display = "none";
 div_add_subject.style.display = "none";
 
@@ -39,7 +45,29 @@ document.addEventListener('click', (event) => {
         input_name.textContent = "";
         div_nav.style.display = "block";
         div_add_subject.style.display = "none";
+        div_add_group.style.display = "none";
         add_group(send_group);
+    }
+
+    if (event.target.className === "btn-delete-x"){
+        const scr = event.target.id;
+        const arr_id = scr.split("-");
+        g_id = parseInt(arr_id[0])
+        s_id = parseInt(arr_id[1])
+        deletSubjectFromCourse(g_id, s_id);
+        getCourses();
+    }
+
+    if (event.target.id === btn_delete_group.id){
+        div_nav.style.display = 'none';
+        delete_form.style.display = 'block';
+        
+        
+
+    }
+    if ( event.target.id === "accept-delete"){
+        console.log(select_for_delet.value)
+        deletGroup(select_for_delet.value)
     }
 });
 
@@ -53,26 +81,16 @@ document.addEventListener('click', (event) => {
 
     }
 });
-/*
-document.addEventListener('click', (event) => {
-    if (event.target.id === "btn-add-courses"){
-        const group_id = select_group.value;
-        const subject_id = select_subject.value;
-        addCourses(group_id, subject_id);
-
-        div_add_subject.style.display = "none";
-        div_nav.style.display = "block";
-    }
-});
-*/
 
 document.addEventListener('click', (event) => {
     if (event.target.className === "cancel"){
         div_add_group.style.display = "none";
         div_add_subject.style.display = "none";
+        delete_form.style.display = "none";
         div_nav.style.display = "block";
     }
 });
+
 
 courses_form.addEventListener('submit', function(event){
     event.preventDefault();
@@ -84,17 +102,15 @@ courses_form.addEventListener('submit', function(event){
 
     div_add_subject.style.display = "none";
     div_nav.style.display = "block";
-
-    const row = document.getElementById(`row-${group_id}`);
-    const cell = row.insertCell(-1);
-    cell.id = `td-${group_id}`;
-    cell.textContent = subject_name.textContent;
+    console.log("YERF")
+    getCourses();
 
 });
 
+// Добавляем группу 
 async function add_group(send_group){
     try {
-        const response = await fetch("http://127.0.0.1:8000/addGroup", {
+        const response = await fetch("http://127.0.0.1:8000/group/add", {
             method : "POST",
             headers : {'Content-Type':'application/json'},
             body: JSON.stringify({ groups: send_group})
@@ -105,52 +121,41 @@ async function add_group(send_group){
                 throw new ERROR(data.derail || data.message || "Произошла ошибка");
             }
 
+        await get_groups()
+        await getCourses();
 
     }catch(error) {
         showErrorOnForm(error.message);
         };
+    
     };
 
 
+// Берем все группы 
 async function get_groups(){
 
-    const response = await fetch("http://127.0.0.1:8000/getAllGroup");
+    const response = await fetch("http://127.0.0.1:8000/group/getall");
 
     const data = await response.json();
     const success = data.success;
     const message = data.message;
     const groups = data.groups;
 
-    for (group of groups) {
-        const text = group.name;
-        const id = group.id;
-
-        const op = document.createElement('option');
-        op.id = `op-group-${id}`;
-        op.value = id;
-        op.textContent = text;
-
-        const newRow = t_body.insertRow(-1);
-        newRow.id = `row-${id}`;
-        const cell_name = newRow.insertCell(0);
-
-        cell_name.id = `td-${id}`;
-        cell_name.textContent = text;
-        select_group.appendChild(op);
-    }
-
+    drawSelector(groups);
+    getCourses()
 
 };
 
+// Берем все предметы 
 async function get_subject(){
-    const response = await fetch("http://127.0.0.1:8000/get_subject");
+    const response = await fetch("http://127.0.0.1:8000/subject/get");
 
     const data = await response.json();
 
     const success = data.success;
     const message = data.message;
     const subjects = data.data;
-
+    if (success){
     for (subject of subjects){
         const id = subject.id
         const name = subject.name;
@@ -161,41 +166,114 @@ async function get_subject(){
         op.textContent = name;
 
         select_subject.appendChild(op);
-
+    }
 
     }
 }
 
+// создаем курс 
 async function addCourses(group_id, subject_id){
-    const response = await fetch("http://127.0.0.1:8000/addCourses", {
+    const response = await fetch("http://127.0.0.1:8000/course/add", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify({group: group_id, subject: subject_id })
     })
+    await getCourses();
 };
 
+// берем все курсы + группы. В ответе должно быть ID группы, ID, предмета, ID курса, название предмета, название группы 
 async function getCourses(){
-    const response = await fetch("http://127.0.0.1:8000/getCourses");
+    const response = await fetch("http://127.0.0.1:8000/course/getall");
     const data = await response.json();
 
     const success = data.success;
     const message = data.message;
     const courses = data.data;
-    for (course of courses){
-        const id = course.id;
-        const name = course.name;
-        console.log(name);
-        const row = document.getElementById(`row-${id}`);
+    const current_data = {};
+    for(let d of courses){
+        const g_name = d.s_groups_name; 
+        const s_name = d.subject_name;
+        const g_id = d.s_groups_id;
+        const s_id = d.subject_id;
+        
+        current_data[g_name] = current_data[g_name] || {};
+        current_data[g_name].id = g_id;
+        current_data[g_name]["course"] = current_data[g_name]["course"] || {};
+        current_data[g_name]["course"][s_id] = s_name;
+        
+    }
+    console.log(current_data);
+    await drawTable(current_data);
+}
 
-        const cell = row.insertCell(-1);
-        cell.id = `td-${id}`;
-        cell.value = name;
-        cell.textContent = name;
+async function deletSubjectFromCourse(g_id, s_id) {
+    const response = await fetch("http://127.0.0.1:8000/course/subject/delete", {
+        method: 'DELETE',
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({group_id: g_id, subject_id: s_id })
+    })
+    await getCourses();
+    
+}
 
+async function deletGroup(g_id) {
+    const response = await fetch("http://127.0.0.1:8000/group/delete", {
+        method: 'DELETE',
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({group_id: g_id})
+    })
+    get_groups();
+}
+
+function drawSelector(groups){
+    select_for_delet.innerHTML = "";
+    select_group.innerHTML = "";
+    for (group of groups) {
+        const text = group.name;
+        const id = group.id;
+
+        const op = document.createElement('option');
+        op.id = `op-group-${id}`;
+        op.value = id;
+        op.textContent = text;
+        select_group.appendChild(op);
+        const op_d = document.createElement('option');
+        op_d.id = `op-d-${id}`;
+        op_d.value = id;
+        op_d.textContent = text; 
+        select_for_delet.appendChild(op_d);
+    }
+}
+
+function drawTable(current_data){
+    tbody.innerHTML = "";
+
+    for (const d in current_data){
+        table.appendChild(tbody)
+        const row = tbody.insertRow();
+        if (current_data.hasOwnProperty(d)){
+            const cell = row.insertCell();
+            cell.textContent = d;
+            c = current_data[d]
+            for (const subject in c.course){
+                if (c.course.hasOwnProperty(subject)){
+                    const subCell = row.insertCell();
+                    const btnDel = row.insertCell();
+                    const btn = document.createElement('button');
+                    btn.textContent = "x";
+                    btn.className = 'btn-delete-x';
+                    btn.id = `${current_data[d].id}-${subject}`;  
+                    btnDel.appendChild(btn);
+                    btnDel.className = "delete-cell";
+                    subCell.textContent = c.course[subject];
+                }
+            }
+        }
     }
 
 
 }
+
 get_groups();
 get_subject();
 getCourses();

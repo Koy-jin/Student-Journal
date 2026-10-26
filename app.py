@@ -1,20 +1,57 @@
-from os import name
-
 from flask import Flask, request, jsonify
 from flask_cors  import CORS
-from mysql.connector import errors
+#from mysql.connector import errors
 from pyexpat.errors import messages
-
+from flasgger import Swagger
 from db_worker import DataBaseWorker
 
 app = Flask(__name__)
+swagger = Swagger(app) 
 CORS(app)
-
 db_worker = DataBaseWorker()
 
 @app.route('/login', methods=['POST'])
 def login_user():
-    # полукчаем JSON-данные, которые прислал fetch из JS
+    """
+    --- 
+    tags:
+        - Authentication
+    summary: Аутентификация пользователя
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+                - username
+                - password
+            properties:
+                username:
+                    type: string
+                    description: Логин пользователя 
+                    example: admin
+                password:
+                    type: string
+                    description: Пароль пользователя
+                    example: "secret123"
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: Роль пользователя в системе (при успехе)
+                        example: admin or teacher or student
+                    message:
+                        type: string
+                        example: "Успешный вход" 
+    """
     data = request.get_json()
 
     login = data.get('username')
@@ -37,9 +74,47 @@ def login_user():
     })
 
 
-# Проверка на правла
+
 @app.route('/me', methods=['POST'])
 def me():
+    """
+    --- 
+    tags:
+        - Authorization
+    summary: Авторизация пользователя
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
     data = request.get_json()
     login = data.get('username')
     USER_DATABASE = db_worker.authorization(login)
@@ -52,47 +127,225 @@ def me():
         })
     return None
 
-
+"""
 @app.route('/listJournal<int:group_id>', methods=['GET'])
 def list_journal(group_id):
-
     journal_data = db_worker.get_user_data(group_id)
     return journal_data
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+"""
 
-@app.route('/add_subject', methods=['POST'])
+@app.route('/subject/add', methods=['POST'])
 def add_subject():
+    """
+    --- 
+    tags:
+        - Subject
+    summary: Добавление предмета
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
     data = request.get_json()
     name = data.get('subjects')
     db_worker.add_subject((name,))
-    return jsonify({
+    return jsonify({    
         "success": True,
         "message": "success"
     }), 200
 
-@app.route('/get_subject', methods=['GET'])
+@app.route('/subject/get', methods=['GET'])
 def get_subject():
+    """
+    --- 
+    tags:
+        - Subject
+    summary: Забираем все предметы из бд 
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
     data = db_worker.get_subjects_db()
     print(data, "ERROR")
     if data:
         return jsonify({
             "success": True,
-            "message": "success",
+            "message": "Success",
             "data": data
         }), 200
+    print("ПУСТО")
     return jsonify({
         "success": False,
-        "message": "БД пуста"
+        "message": "false"
     }), 404
 
-@app.route('/add_user', methods=['POST'])
+@app.route('/subject/delete', methods=['DELETE'])
+def subjectDelete(): 
+    """
+    --- 
+    tags:
+        - Subject
+    summary: Удаляем предмет 
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h 
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
+    data = request.get_json()
+    name = data.get("name")
+    db_worker.delete_subject(name)   
+    print("Удален ERRoR", data)
+    return jsonify({})
+
+
+@app.route('/user/add', methods=['POST'])
 def add_user():
+    """
+    --- 
+    tags:
+        - User
+    summary: Добавляем пользователя
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h 
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
     data = request.get_json()
     login = data.get('logins')
     password = data.get('passwords')
     name = data.get('names')
     role = data.get('rols')
     group = data.get('groups')
-    if group == "N/a":
+    if group == 0:
         group = None
 
     if db_worker.add_studentCheckLogin(login):
@@ -108,8 +361,173 @@ def add_user():
             "message" : "Такой пользователь уже существует"
         })
 
-@app.route('/addGroup', methods=['POST'])
+@app.route('/user/getall', methods=['GET'])
+def get_all_users():
+    """
+    --- 
+    tags:
+        - User
+    summary: Берем всех пользователей
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
+    user_data = db_worker.get_all_user_data()
+    if user_data: 
+        return jsonify({
+            "success": True,
+            "message": "Success",
+            "data": user_data
+        })
+    return jsonify({
+            "success": False,
+            "message": "Success",
+            "data": user_data
+        })
+
+@app.route('/user/delete', methods=['DELETE'])
+def userDelete():
+    """
+    --- 
+    tags:
+        - User
+    summary: Удаляем пользователя 
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """    
+    data = request.get_json()
+    u_id = data.get("user")
+    db_worker.userDelete(u_id);
+    return jsonify({})
+
+@app.route('/user/patchall', methods=['PATCH'])
+def userPatchAll():
+    """
+    --- 
+    tags:
+        - User
+    summary: Обновляем всех пользователей
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """  
+    data = request.get_json()
+    u_data = data.get('users')
+    db_worker.patchUsersData(u_data)
+    return jsonify({})
+
+@app.route('/group/add', methods=['POST'])
 def add_group():
+    """
+    --- 
+    tags:
+        - Group
+    summary: Добавляем группу
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type:  p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example:    p_h
+    """
     data = request.get_json()
     name1 = data.get("groups")
     try:
@@ -123,8 +541,30 @@ def add_group():
          }), 409
         return jsonify({"error" : "Bad Request"}), 400
 
-@app.route('/getAllGroup', methods=['GET'])
+@app.route('/group/getall', methods=['GET'])
 def get_all_group():
+    """
+    --- 
+    tags:
+        - Group
+    summary: Берем все группы
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
     groups_list = db_worker.get_all_groups()
     print(groups_list)
     if groups_list:
@@ -136,27 +576,47 @@ def get_all_group():
         "success": False,
         "message": "Данных ещё нет"
     })
-@app.route('/getAllUsers', methods=['GET'])
-def get_all_users():
-    user_data = db_worker.get_all_user_data()
-    return jsonify({
-        "success": True,
-        "message": "Success",
-        "data": user_data
-    })
 
-@app.route('/getTopicsAll', methods=['GET'])
-def get_all_topics():
-    data = db_worker.get_all_topics()
-    print(data)
-    return jsonify({
-        "success": True,
-        "message": "Success",
-        "data": data
-    })
-
-@app.route('/getGroup/<int:group_id>', methods=['GET'])
+@app.route('/group/get/<int:group_id>', methods=['GET'])
 def get_group(group_id):
+    """
+    --- 
+    tags:
+        - Group
+    summary: Берем группу по её ID
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
     data = db_worker.get_group(group_id)
     return jsonify({
         "success": True,
@@ -164,8 +624,94 @@ def get_group(group_id):
         "data": data
     })
 
-@app.route('/addCourses', methods=['POST'])
+@app.route('/group/delete', methods=['DELETE'])
+def groupDelete():
+    """
+    --- 
+    tags:
+        - Group
+    summary: удаляем группу
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """    
+    data = request.get_json()
+    g_id = data.get("group_id")
+    print(g_id, "AAAAAAAA")
+    db_worker.groupDelete(g_id)
+    return jsonify({})
+
+
+
+@app.route('/course/add', methods=['POST'])
 def add_courses():
+    """
+    --- 
+    tags:
+        - Course
+    summary: Это список предметов, которые назначенны группе. Тут он добаляется 
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
     data = request.get_json()
     group_id = data.get("group")
     subject_id = data.get("subject")
@@ -175,25 +721,170 @@ def add_courses():
         "message": "Success"
     })
 
-@app.route('/getCourses', methods=['GET'])
+@app.route('/course/getall', methods=['GET'])
 def get_courses():
+    """
+    --- 
+    tags:
+        - Course
+    summary: Берет все курсы 
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example:  p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
     data = db_worker.get_courses()
-    return jsonify({
-        "success": True,
-        "message": "Success",
-        "data": data
-    })
-@app.route('/getCourse/<int:group_id>', methods=['GET'])
-def get_course(group_id):
-    data = db_worker.get_course(group_id)
+    print(data)
     return jsonify({
         "success": True,
         "message": "Success",
         "data": data
     })
 
-@app.route('/addTopic', methods=['POST'])
+@app.route('/course/get/<int:group_id>', methods=['GET'])
+def get_course(group_id):
+    """
+    --- 
+    tags:
+        - Course
+    summary: Берет курс по ID группы 
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h 
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
+    data = db_worker.get_course(group_id)
+    return jsonify({
+        "success": True,
+        "message": "Success",
+        "data": data
+    })
+@app.route('/course/subject/delete', methods=['DELETE'])
+def deleteSubjectFromCourse():
+    """
+    --- 
+    tags:
+        - Course
+    summary: Удаляет предмет из курса  
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
+    data = request.get_json()
+    g_id = data.get("group_id")
+    s_id = data.get("subject_id")
+    db_worker.deleteSubjectFromCourse(g_id, s_id)
+    return jsonify({})
+
+@app.route('/topic/add', methods=['POST'])
 def add_topic():
+    """
+    --- 
+    tags:
+        - Topic
+    summary: Создает тему для предмета и группы 
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
     data = request.get_json()
     g_id = data.get('g_id')
     s_id = data.get('s_id')
@@ -205,8 +896,155 @@ def add_topic():
         "data": data
     })
 
-@app.route('/getMarksAll', methods=['GET'])
+@app.route('/topic/getall', methods=['GET'])
+def get_all_topics():
+    """
+    --- 
+    tags:
+        - Topic
+    summary: берет все темы
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """
+    data = db_worker.get_all_topics()
+    print(data, "AAAAAA")
+    return jsonify({
+        "success": True,
+        "message": "Success",
+        "data": data
+    })
+
+@app.route('/topic/delete', methods=['DELETE'])
+def topicDelete():
+    """
+    --- 
+    tags:
+        - Topic
+    summary: Удаляет тему по ID группы и ID предмета 
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """    
+    data = request.get_json()
+    g_id = data.get('group_id')
+    s_id = data.get('subject_id')
+    topic = data.get('topic')
+    print(g_id, s_id, topic, "=+++===+++===++++AAAAAA===+++===+++")
+    db_worker.deleteTopic(g_id, s_id, topic)
+    return jsonify({})
+
+@app.route('/mark/addall', methods=['POST'])
+def add_marks():
+    """
+    --- 
+    tags:
+        - Mark
+    summary: Добавляет оценку. Оценка принадлежит студенту и теме. 
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """ 
+    data = request.get_json()
+    student_lis = data.get("send")
+    db_worker.add_marks(student_lis)
+    return jsonify({})
+
+@app.route('/mark/getall', methods=['GET'])
 def get_marks_all():
+    """
+    --- 
+    tags:
+        - Mark
+    summary: Берет все оценки 
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """  
     data = db_worker.get_marks_all()
     return jsonify({
         "success": True,
@@ -214,19 +1052,55 @@ def get_marks_all():
         "data": data
     })
 
-@app.route('/addMarks', methods=['POST'])
-def add_marks():
-    data = request.get_json()
-    student_lis = data.get("send")
-    db_worker.add_marks(student_lis)
-    return jsonify({})
 
 @app.route('/mark/patch', methods=['PATCH'])
 def put_mark():
+    """
+    --- 
+    tags:
+        - Mark
+    summary: Обновляет оценку
+    parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            rquired: 
+            properties:
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+                p_h:
+                    type: p_h
+                    description: p_h
+                    example: p_h
+    responses:
+        200:
+            description: Ответ сервера (успешный или не успешный)
+            schema:
+                type: object
+                properties:
+                    success:
+                        type: boolean
+                        example: true
+                    status:
+                        type: string
+                        description: p_h
+                        example: p_h
+                    message:
+                        type: p_h
+                        example: p_h
+    """ 
     data = request.get_json()
     update_marks_list = data.get('send')
     db_worker.put_mark(update_marks_list)
     return jsonify({})
+
+
+
+
 
 if __name__== '__main__':
     DataBaseWorker.init_pool()

@@ -3,12 +3,16 @@
     <head>
         <meta charset="utf-8"/>
         <title>Тестовая страница</title>
+        <link rel="stylesheet" href="style.css">
+        
     </head>
-    <body>
-    <main>
-        <p>login <input type="text" id="login" name="q" placeholder="Login" /></p>
-        <p>password <input type="password" id="password" name="q" placeholder="password" /></p>
-        <button>log in</button>
+    <body class="b-login">
+    <main class="m-login">
+        <div class="div-login">
+            <label style="display: block; padding-top: 2px ;">Login </style><input style="margin-left:25px ;" type="text" id="login" name="q" placeholder="Login" /></label>
+            <label style="display: block; padding-top: 5px ">Password<input style="margin-left:6px;" type="Password" id="password" name="q" placeholder="Password" /></label>
+            <button style="margin-left: 0;margin-right: auto;" class="btn-m-login">Log in</button>
+        </div>
         <p id="massage"></p>
         <script src="login.js"></script>
     </main>
