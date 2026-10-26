@@ -127,44 +127,6 @@ def me():
         })
     return None
 
-"""
-@app.route('/listJournal<int:group_id>', methods=['GET'])
-def list_journal(group_id):
-    journal_data = db_worker.get_user_data(group_id)
-    return journal_data
-    parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            rquired: 
-            properties:
-                p_h:
-                    type: p_h
-                    description: p_h
-                    example: p_h
-                p_h:
-                    type: p_h
-                    description: p_h
-                    example: p_h
-    responses:
-        200:
-            description: Ответ сервера (успешный или не успешный)
-            schema:
-                type: object
-                properties:
-                    success:
-                        type: boolean
-                        example: true
-                    status:
-                        type: string
-                        description: p_h
-                        example: p_h
-                    message:
-                        type: p_h
-                        example: p_h
-"""
 
 @app.route('/subject/add', methods=['POST'])
 def add_subject():
