@@ -14,7 +14,7 @@ class DataBaseWorker:
     def init_pool(cls):
         db_config = {
             "host": '127.0.0.1',
-            "user": 'root',
+            "user": 'dbworker',
             "password": 'Maria2001',
             "database": 'journaldb'
         }
@@ -278,7 +278,7 @@ class DataBaseWorker:
         with connection:
             with connection.cursor(dictionary=True, buffered=True) as cursor:
                 select_query = """
-                Select * FROM marks
+                SELECT * FROM marks
                 """
                 cursor.execute(select_query)
                 data = cursor.fetchall()
