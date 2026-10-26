@@ -70,7 +70,6 @@ class DataBaseWorker:
                 """
                 cursor.execute(select_query, (login,))
                 student = cursor.fetchone()
-                print(student)
                 if student:
                     return False
                 return True
@@ -191,7 +190,6 @@ class DataBaseWorker:
                 """
                 cursor.execute(select_query)
                 users_data = cursor.fetchall()
-                print(users_data)
                 return users_data
     @classmethod
     def get_group(cls, group_id):
@@ -205,7 +203,6 @@ class DataBaseWorker:
                 """
                 cursor.execute(select_query, (group_id,))
                 data = cursor.fetchall()
-                print(data)
                 return data
     @classmethod
     def add_course(cls, group_id, subject_id):
@@ -256,8 +253,6 @@ class DataBaseWorker:
                         """
                 cursor.execute(select_query, (group_id,))
                 data = cursor.fetchall()
-                print("----COURSE---->", data)
-                print(data)
                 return data
     @classmethod
     def get_all_topics(cls):
@@ -286,9 +281,7 @@ class DataBaseWorker:
 
     @classmethod
     def add_marks(cls, student_list):
-        print(student_list)
         records_to_insert  = [(int(item['student_id']), str(item['grade']), int(item['subject_id']),str(item['topic']), int(item['group_id'])) for item in student_list]
-        print("==========>",records_to_insert)
         connection = cls._get_conn()
         with connection:
             with connection.cursor(buffered=True) as cursor:
@@ -302,14 +295,11 @@ class DataBaseWorker:
                     return True
                 except mysql.connector.Error as err:
                     connection.rollback()
-                    print(f"Ошибка MySQL: {err}")
                     return False
     
     @classmethod
     def put_mark(cls, update_marks_list):
-        print("===========>",update_marks_list)
         records_to_update = [(item['mark'], int(item['student_id']), int(item['sub_id']), item['t_name'], int(item['grp_id'])) for item in update_marks_list]
-        print("------------>",records_to_update)
         connection = cls._get_conn()
         with connection:
             with connection.cursor(buffered=True) as cursor:
@@ -373,11 +363,6 @@ class DataBaseWorker:
     @classmethod
     def patchUsersData(cls, u_data):
         records_to_update = [(item["group_id"], item["role"], item["id"]) for item in u_data]
-        print()
-        print()
-        print(records_to_update, "<<<<<<<<<++++++")
-        print()
-        print()
         connection = cls._get_conn()
         with connection:
             with connection.cursor(buffered=true) as cursor:

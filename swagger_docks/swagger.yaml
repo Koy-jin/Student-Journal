@@ -1,0 +1,830 @@
+openapi: 3.0.3
+info:
+  title: "My Flask API Documentation"
+  version: "1.0.0"
+  description: "Документация для Flask-приложения (26 эндпоинтов)"
+
+tags:
+  - name: "Авторизация и Пользователи"
+    description: "Эндпоинты для входа и проверки прав"
+  - name: "Предметы (Subjects)"
+    description: "Управление учебными предметами"
+  - name: "Пользователи (Users)"
+    description: "Управление аккаунтами пользователей и студентов"
+  - name: "Группы (Groups)"
+    description: "Управление учебными группами"
+  - name: "Курсы (Courses)"
+    description: "Связывание учебных групп и предметов"
+  - name: "Темы (Topics)"
+    description: "Управление темами занятий для предметов и групп"
+  - name: "Оценки (Marks)"
+    description: "Выставление, обновление и просмотр оценок студентов"
+
+paths:
+  /login:
+    post:
+      tags:
+        - "Авторизация и Пользователи"
+      summary: "Авторизация пользователя"
+      description: "Проверяет логин и пароль по базе данных и возвращает роль пользователя."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: "ivan_admin"
+                password:
+                  type: string
+                  example: "qwerty1234"
+      responses:
+        200:
+          description: "Запрос обработан сервером (проверьте поле success в ответе)"
+          content:
+            application/json:
+              examples:
+                SuccessLogin:
+                  summary: "Успешный вход"
+                  value:
+                    success: true
+                    status: "admin"
+                    message: "Успешный вход"
+                FailedLogin:
+                  summary: "Ошибка (неверный логин или пароль)"
+                  value:
+                    success: false
+                    message: "В доступе отказано или неверный пароль"
+
+  /me:
+    post:
+      tags:
+        - "Авторизация и Пользователи"
+      summary: "Проверка прав текущего пользователя"
+      description: "Проверяет, является ли пользователь администратором."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+              properties:
+                username:
+                  type: string
+                  example: "ivan_admin"
+      responses:
+        200:
+          description: "Результат проверки роли"
+          content:
+            application/json:
+              examples:
+                IsAdmin:
+                  summary: "Пользователь является админом"
+                  value:
+                    success: true
+                NotAdmin:
+                  summary: "Пользователь не админ"
+                  value:
+                    success: false
+  /subject/add:
+    post:
+      tags:
+        - "Предметы (Subjects)"
+      summary: "Добавить новый предмет"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subjects
+              properties:
+                subjects:
+                  type: string
+                  example: "Математика"
+      responses:
+        200:
+          description: "Предмет успешно добавлен"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "success"
+
+  /subject/get:
+    get:
+      tags:
+        - "Предметы (Subjects)"
+      summary: "Получить список всех предметов"
+      responses:
+        200:
+          description: "Список предметов успешно получен"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Success"
+                  data:
+                    type: array
+                    description: "Массив с данными предметов из БД"
+                    items:
+                      type: string
+                    example: ["Математика", "Физика", "Химия"]
+        404:
+          description: "Предметы не найдены (БД пуста)"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "false"
+
+  /subject/delete:
+    delete:
+      tags:
+        - "Предметы (Subjects)"
+      summary: "Удалить предмет"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Математика"
+      responses:
+        200:
+          description: "Предмет успешно удален (возвращает пустой объект)"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+  /user/add:
+    post:
+      tags:
+        - "Пользователи (Users)"
+      summary: "Добавить нового пользователя/студента"
+      description: "Создает пользователя с указанной ролью и группой. Если группа передана как 0, она запишется как null."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - logins
+                - passwords
+                - names
+                - rols
+                - groups
+              properties:
+                logins:
+                  type: string
+                  example: "petrov_s"
+                passwords:
+                  type: string
+                  example: "studpass123"
+                names:
+                  type: string
+                  example: "Петров Сидор Петрович"
+                rols:
+                  type: string
+                  description: "Роль пользователя (например: student, teacher, admin)"
+                  example: "student"
+                groups:
+                  type: integer
+                  description: "ID группы. Передайте 0, если группы нет."
+                  example: 101
+      responses:
+        200:
+          description: "Запрос обработан (проверьте статус в ответе)"
+          content:
+            application/json:
+              examples:
+                UserCreated:
+                  summary: "Пользователь успешно добавлен"
+                  value:
+                    success: "ok"
+                    message: "Пользователь добавлен"
+                UserExists:
+                  summary: "Логин уже занят"
+                  value:
+                    success: "no"
+                    message: "Такой пользователь уже существует"
+
+  /user/getall:
+    get:
+      tags:
+        - "Пользователи (Users)"
+      summary: "Получить список вообще всех пользователей"
+      responses:
+        200:
+          description: "Список пользователей"
+          content:
+            application/json:
+              examples:
+                HasUsers:
+                  summary: "Пользователи найдены"
+                  value:
+                    success: true
+                    message: "Success"
+                    data:
+                      - id: 1
+                        name: "Петров Сидор"
+                        role: "student"
+                        group: 101
+                        login: "petrov_s"
+                NoUsers:
+                  summary: "Пользователей нет в БД (пустой массив/null)"
+                  value:
+                    success: false
+                    message: "Success"
+                    data: null
+
+  /user/delete:
+    delete:
+      tags:
+        - "Пользователи (Users)"
+      summary: "Удалить пользователя по его ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user
+              properties:
+                user:
+                  type: integer
+                  description: "ID пользователя для удаления"
+                  example: 15
+      responses:
+        200:
+          description: "Пользователь успешно удален"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+
+  /user/patchall:
+    patch:
+      tags:
+        - "Пользователи (Users)"
+      summary: "Массовое или частичное обновление данных пользователей"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - users
+              properties:
+                users:
+                  type: array
+                  description: "Массив с обновленными данными пользователей"
+                  items:
+                    type: object
+                  example: [{"id": 15, "names": "Новое Имя"}, {"id": 16, "groups": 102}]
+      responses:
+        200:
+          description: "Данные успешно обновлены"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+  /group/add:
+    post:
+      tags:
+        - "Группы (Groups)"
+      summary: "Добавить новую группу"
+      description: "Создает новую учебную группу. Возвращает 409, если имя группы уже занято."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - groups
+              properties:
+                groups:
+                  type: string
+                  description: "Название или номер группы"
+                  example: "PROG-201"
+      responses:
+        201:
+          description: "Группа успешно создана"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+        409:
+          description: "Конфликт — группа с таким именем уже существует"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Conflict"
+                  message:
+                    type: string
+                    example: "Такая группа уже сущуствует"
+        400:
+          description: "Некорректный запрос / Ошибка БД"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Bad Request"
+
+  /group/getall:
+    get:
+      tags:
+        - "Группы (Groups)"
+      summary: "Получить список всех групп"
+      responses:
+        200:
+          description: "Результат запроса списка групп"
+          content:
+            application/json:
+              examples:
+                GroupsFound:
+                  summary: "Список успешно получен"
+                  value:
+                    success: true
+                    message: "Успешно"
+                    groups:
+                      - id: 1
+                        name: "PROG-201"
+                      - id: 2
+                        name: "DESIGN-101"
+                NoGroups:
+                  summary: "Данных еще нет в БД"
+                  value:
+                    success: false
+                    message: "Данных ещё нет"
+
+  /group/get/{group_id}:
+    get:
+      tags:
+        - "Группы (Groups)"
+      summary: "Получить информацию о конкретной группе по ID"
+      parameters:
+        - name: group_id
+          in: path
+          required: true
+          description: "Уникальный ID группы (целое число)"
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: "Информация о группе"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    description: "Данные группы из БД"
+                    example: {"id": 1, "name": "PROG-201", "created_at": "2026-10-26"}
+
+  /group/delete:
+    delete:
+      tags:
+        - "Группы (Groups)"
+      summary: "Удалить группу по ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - group_id
+              properties:
+                group_id:
+                  type: integer
+                  description: "ID группы для удаления"
+                  example: 2
+      responses:
+        200:
+          description: "Группа успешно удалена"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+  /course/add:
+    post:
+      tags:
+        - "Курсы (Courses)"
+      summary: "Назначить предмет группе (Создать курс)"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - group
+                - subject
+              properties:
+                group:
+                  type: integer
+                  description: "ID группы"
+                  example: 1
+                subject:
+                  type: integer
+                  description: "ID предмета"
+                  example: 5
+      responses:
+        200:
+          description: "Предмет успешно назначен группе"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Success"
+
+  /course/getall:
+    get:
+      tags:
+        - "Курсы (Courses)"
+      summary: "Получить список всех существующих курсов (связок групп и предметов)"
+      responses:
+        200:
+          description: "Полный список связей групп и предметов"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Success"
+                  data:
+                    type: array
+                    description: "Массив курсов из БД"
+                    items:
+                      type: object
+                    example:
+                      - course_id: 12
+                        group_id: 1
+                        group_name: "PROG-201"
+                        subject_id: 5
+                        subject_name: "Математика"
+
+  /course/get/{group_id}:
+    get:
+      tags:
+        - "Курсы (Courses)"
+      summary: "Получить все курсы/предметы конкретной группы"
+      parameters:
+        - name: group_id
+          in: path
+          required: true
+          description: "ID интересующей группы"
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: "Список предметов для группы успешно получен"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Success"
+                  data:
+                    type: array
+                    description: "Список предметов, назначенных этой группе"
+                    items:
+                      type: object
+                    example: [{"subject_id": 5, "subject_name": "Математика"}, {"subject_id": 3, "subject_name": "Физика"}]
+
+  /course/subject/delete:
+    delete:
+      tags:
+        - "Курсы (Courses)"
+      summary: "Удалить предмет из курса группы (разорвать связь)"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - group_id
+                - subject_id
+              properties:
+                group_id:
+                  type: integer
+                  description: "ID группы"
+                  example: 1
+                subject_id:
+                  type: integer
+                  description: "ID предмета, который нужно убрать"
+                  example: 5
+      responses:
+        200:
+          description: "Связь успешно удалена"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+  /topic/add:
+    post:
+      tags:
+        - "Темы (Topics)"
+      summary: "Добавить новую тему"
+      description: "Создает тему занятия для конкретной группы по определенному предмету."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - g_id
+                - s_id
+                - t_name
+              properties:
+                g_id:
+                  type: integer
+                  description: "ID группы"
+                  example: 1
+                s_id:
+                  type: integer
+                  description: "ID предмета"
+                  example: 5
+                t_name:
+                  type: string
+                  description: "Название темы"
+                  example: "Введение в интегралы"
+      responses:
+        200:
+          description: "Тема успешно добавлена"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Success"
+                  data:
+                    type: object
+                    description: "Эхо отправленных данных"
+                    properties:
+                      g_id:
+                        type: integer
+                        example: 1
+                      s_id:
+                        type: integer
+                        example: 5
+                      t_name:
+                        type: string
+                        example: "Введение в интегралы"
+
+  /topic/getall:
+    get:
+      tags:
+        - "Темы (Topics)"
+      summary: "Получить список всех тем"
+      responses:
+        200:
+          description: "Полный список тем из базы данных"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Success"
+                  data:
+                    type: array
+                    description: "Массив всех тем"
+                    items:
+                      type: object
+                    example:
+                      - id: 42
+                        group_id: 1
+                        subject_id: 5
+                        topic_name: "Введение в интегралы"
+
+  /topic/delete:
+    delete:
+      tags:
+        - "Темы (Topics)"
+      summary: "Удалить тему"
+      description: "Удаляет тему по составному ключу (группа + предмет + название темы)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - group_id
+                - subject_id
+                - topic
+              properties:
+                group_id:
+                  type: integer
+                  description: "ID группы"
+                  example: 1
+                subject_id:
+                  type: integer
+                  description: "ID предмета"
+                  example: 5
+                topic:
+                  type: string
+                  description: "Точное название темы для удаления"
+                  example: "Введение в интегралы"
+      responses:
+        200:
+          description: "Тема успешно удалена"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+
+  /mark/addall:
+    post:
+      tags:
+        - "Оценки (Marks)"
+      summary: "Массово добавить/выставить оценки"
+      description: "Принимает массив данных студентов и выставляет им оценки в базу данных."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - send
+              properties:
+                send:
+                  type: array
+                  description: "Список студентов и выставляемых оценок"
+                  items:
+                    type: object
+                  example:
+                    - student_id: 15
+                      subject_id: 5
+                      topic_id: 42
+                      mark: "5"
+                    - student_id: 16
+                      subject_id: 5
+                      topic_id: 42
+                      mark: "4"
+      responses:
+        200:
+          description: "Оценки успешно добавлены"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+
+  /mark/getall:
+    get:
+      tags:
+        - "Оценки (Marks)"
+      summary: "Получить все оценки"
+      description: "Возвращает полную ведомость оценок всех студентов из базы данных."
+      responses:
+        200:
+          description: "Список оценок успешно получен"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Success"
+                  data:
+                    type: array
+                    description: "Массив с оценками"
+                    items:
+                      type: object
+                    example:
+                      - mark_id: 1
+                        student_name: "Петров Сидор"
+                        subject_name: "Математика"
+                        topic_name: "Введение в интегралы"
+                        mark: "5"
+                        date: "2026-10-26"
+
+  /mark/patch:
+    patch:
+      tags:
+        - "Оценки (Marks)"
+      summary: "Массово обновить/изменить оценки"
+      description: "Принимает список существующих оценок, которые необходимо скорректировать в базе данных."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - send
+              properties:
+                send:
+                  type: array
+                  description: "Список оценок для обновления"
+                  items:
+                    type: object
+                  example:
+                    - mark_id: 1
+                      mark: "4"  # Исправили оценку с 5 на 4
+                    - mark_id: 2
+                      mark: "5"
+      responses:
+        200:
+          description: "Оценки успешно обновлены"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
