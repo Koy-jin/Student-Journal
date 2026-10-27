@@ -22,77 +22,52 @@ tags:
 
 paths:
   /login:
-    post:
-      tags:
-        - "Авторизация и Пользователи"
-      summary: "Авторизация пользователя"
-      description: "Проверяет логин и пароль по базе данных и возвращает роль пользователя."
-      requestBody:
-        required: true
+  post:
+    tags:
+      - "Авторизация и Пользователи"
+    summary: "Авторизация пользователя"
+    description: "Проверяет логин и пароль по базе данных. При успехе возвращает роль пользователя и все его данные из БД."
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - username
+              - password
+            properties:
+              username:
+                type: string
+                example: "ivan_admin"
+              password:
+                type: string
+                example: "qwerty1234"
+    responses:
+      200:
+        description: "Запрос обработан сервером"
         content:
           application/json:
-            schema:
-              type: object
-              required:
-                - username
-                - password
-              properties:
-                username:
-                  type: string
-                  example: "ivan_admin"
-                password:
-                  type: string
-                  example: "qwerty1234"
-      responses:
-        200:
-          description: "Запрос обработан сервером (проверьте поле success в ответе)"
-          content:
-            application/json:
-              examples:
-                SuccessLogin:
-                  summary: "Успешный вход"
-                  value:
-                    success: true
-                    status: "admin"
-                    message: "Успешный вход"
-                FailedLogin:
-                  summary: "Ошибка (неверный логин или пароль)"
-                  value:
-                    success: false
-                    message: "В доступе отказано или неверный пароль"
+            examples:
+              SuccessLogin:
+                summary: "Успешный вход (возвращает данные пользователя)"
+                value:
+                  success: true
+                  status: "admin"
+                  message: "Успешный вход"
+                  data:
+                    id: 1
+                    login: "ivan_admin"
+                    password: "qwerty1234"
+                    name: "Иванов Иван Иванович"
+                    role: "admin"
+                    group: null
+              FailedLogin:
+                summary: "Ошибка (неверный логин или пароль)"
+                value:
+                  success: false
+                  message: "В доступе отказано или неверный пароль"
 
-  /me:
-    post:
-      tags:
-        - "Авторизация и Пользователи"
-      summary: "Проверка прав текущего пользователя"
-      description: "Проверяет, является ли пользователь администратором."
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - username
-              properties:
-                username:
-                  type: string
-                  example: "ivan_admin"
-      responses:
-        200:
-          description: "Результат проверки роли"
-          content:
-            application/json:
-              examples:
-                IsAdmin:
-                  summary: "Пользователь является админом"
-                  value:
-                    success: true
-                NotAdmin:
-                  summary: "Пользователь не админ"
-                  value:
-                    success: false
   /subject/add:
     post:
       tags:

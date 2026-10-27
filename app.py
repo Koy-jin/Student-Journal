@@ -49,21 +49,6 @@ def login_user():
         "message": "В доступе отказано или неверный пароль"
     })
 
-
-
-@app.route('/me', methods=['POST'])
-def me():
-    data = request.get_json()
-    login = data.get('username')
-    USER_DATABASE = db_worker.authorization(login)
-    if USER_DATABASE["role"] == "admin":
-        return jsonify({
-            "success": True
-        })
-    return jsonify({
-        "success": False
-        })
-
 @app.route('/subject/add', methods=['POST'])
 def add_subject():
     data = request.get_json()
