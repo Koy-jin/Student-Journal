@@ -29,16 +29,16 @@ swagger = Swagger(app, template_file='swagger_docks/swagger.yaml', config=swagge
 @app.route('/login', methods=['POST'])
 def login_user():
     data = request.get_json()
-
     login = data.get('username')
     password = data.get('password')
-    USER_DATABASE = db_worker.authorization(login)
-    if login == USER_DATABASE["login"]:
-        if USER_DATABASE["password"] == password:
+    USER = db_worker.authorization(login)
+    if login == USER["login"]:
+        if USER["password"] == password:
             return jsonify({
                 "success": True,
-                "status": USER_DATABASE["role"],
-                "message": "Успешный вход"
+                "status": USER["role"],
+                "message": "Успешный вход",
+                "data": USER
             })
         return jsonify({
             "success": False,
@@ -293,4 +293,3 @@ if __name__== '__main__':
     DataBaseWorker.init_pool()
     app.run(debug=True, port=8000)
 
-    ### dasdfasdf

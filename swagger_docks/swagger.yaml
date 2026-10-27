@@ -817,9 +817,9 @@ paths:
                     type: object
                   example:
                     - mark_id: 1
-                      mark: "4"  # Исправили оценку с 5 на 4
-                    - mark_id: 2
-                      mark: "5"
+                      value: "4"  # Исправили оценку с 5 на 4
+                    - mark_id: 1
+                      value: "5"
       responses:
         200:
           description: "Оценки успешно обновлены"

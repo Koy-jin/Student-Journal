@@ -1,6 +1,4 @@
 const nav_add_topic = document.getElementById('nav-block-add-topic');
-
-
 const input_topic = document.getElementById('input-add-topic');
 const select_group = document.getElementById('select-group');
 const table = document.getElementById('tbody-students');
@@ -9,15 +7,19 @@ const div_switcher = document.getElementById('div-switcher-subject-btn');
 const div_edd = document.getElementById('div-edd');
 const div_m_options = document.getElementById('div-m-options');
 const btn_mark_edd_push = document.getElementById('btn-marks-edit-push');
+const nav_subject = document.getElementById('nav-subject');
 
 div_m_options.style.display = 'none';
 nav_add_topic.style.display = 'none';
 div_switcher.style.display = 'none';
 div_edd.style.display = 'none';
 
+const current_role = urlParams.get('role')
 
 let CURRENT_SUBJECT = null;
 getGroups();
+
+
 
 document.addEventListener('click', (event) => {
     const btn = event.target;
@@ -76,7 +78,11 @@ document.addEventListener('click', (event) => {
 
     }
     if (event.target.classList.contains("switcher")){
-        div_m_options.style.display = 'block';
+        if ( current_role === "student") {
+            div_m_options.style.display = 'none';
+        } else { 
+            div_m_options.style.display = 'block';
+        }
         if (CURRENT_SUBJECT !== null){
             CURRENT_SUBJECT.disabled = false;
             CURRENT_SUBJECT.style.cursor = 'default';
@@ -136,7 +142,9 @@ document.addEventListener('click', (event) => {
 // Переключение групп
 document.addEventListener('change', (event) =>{
     const select = event.target;
+    console.log("ТУТУ")
     if (select.id === "select-group"){
+        console.log("ТАМА")
         getGroup(select.value);
         const div_delet_form = document.getElementById('div-delete-form'); 
         div_switcher.style.display = 'block';
@@ -181,11 +189,26 @@ async function getGroups(){
        op.textContent = group.name;
        select_group.appendChild(op);
     }
+
+    if (current_role === "admin") {
+        const mark_putch = document.getElementById("btn-marks-edit");
+        mark_putch.style.display = 'none';
+    } else if ( role === 'teacher'){
+    select_group.value = "N/A";
+    } else if (current_role === 'student'){
+    const id = urlParams.get('id')
+    const u_id = parseInt(id);
+    const g_id = u_id % 1000;
+    select_group.value = g_id;
+    nav_subject.style.display = "none";
+    const sl = new Event('change', {bubbles: true});
+    select_group.dispatchEvent(sl);
+    }
 };
 
 //Получаем группы по ID(Получаем его при переключении свича групп )
-async function getGroup(group_id){
-    const request = await fetch(`http://127.0.0.1:8000/group/get/${group_id}`);
+async function getGroup(){
+    const request = await fetch(`http://127.0.0.1:8000/group/get/${select_group.value}`);
 
     const data = await request.json();
     const success = data.success;
@@ -448,20 +471,34 @@ function drawSelectGrade(select){
 function average_score(t_body, row_h){
     const group_id = select_group.value;
     const subject_id = CURRENT_SUBJECT.value;
-    const marks_count = row_h.cells.length - 2;
+    
+
 
     for ( let i = 0; i < t_body.rows.length; i++){
         let row = t_body.rows[i];
         let marks_sum = 0;
+        let marks_count = 0
         for (let j = 1; j < row.cells.length; j++){
             let sl = row.cells[j].querySelector('.current_grade');
             let v = parseInt(sl.value);
+
+            if (v !== 0){
+                marks_count = marks_count +  1;
+            }
+
             console.log(v, "<<<<<<=", marks_count);
             marks_sum += parseInt(v);
         }
-        let sr = (marks_sum / marks_count).toFixed(2);
+
+        let sr = (marks_sum / marks_count);
         const newCell = row.insertCell(-1)
-        newCell.textContent = sr;
+
+        if (Number.isNaN(sr)){
+            newCell.textContent = "-";
+        } else {
+            newCell.textContent = sr.toFixed(2);
+        }
+        
     }
 
 }
