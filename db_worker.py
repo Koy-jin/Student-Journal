@@ -35,7 +35,7 @@ class DataBaseWorker:
         with connection:
             with connection.cursor(dictionary=True, buffered=True) as cursor:
                 select_query = """
-                SELECT id, password, role, login
+                SELECT *
                 FROM users
                 WHERE login =%s
                 """

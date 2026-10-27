@@ -96,7 +96,7 @@ document.addEventListener('click', event => {
             if (send_group === "0" || send_group === 0){
                 send_group = null
             }
-            if (send_role === "admin" || select_role === "teacher"){
+            if (send_role === "admin" || send_role === "teacher"){
                 send_group = null
             }
             addUser(send_login, send_password, send_name, send_role, send_group);

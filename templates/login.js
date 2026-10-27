@@ -24,12 +24,18 @@ btn.addEventListener("click", async function(){
         body: JSON.stringify({username: l, password: p}) // упаковка данных
     });
     const data = await response.json();
-
-    if (data.success){
-        if (data.status === "student"){
-            window.location.href = "user.html?id=" + l + "&login=" + l;
-        } else if (data.status === "admin"){
-            window.location.href = "admin.html?login=" + l;
+    const role = data.status;
+    const us_data = data.data;
+    console.log(us_data);
+    if (data.status){
+        let id = parseInt(us_data.id) * 10000
+        if (role === "student"){
+            id = id + parseInt(us_data.group_id); 
+            window.location.href = `journal.html?id=${id}&role=${role}`;
+        } else if (role === "admin"){
+            window.location.href = `admin.html?id=${id}&role=${role}`;
+        } else if ( role === "teacher"){
+             window.location.href = `journal.html?id=${id}&role=${role}`;
         }
     } else {
         para.textContent = data.message;
