@@ -175,7 +175,7 @@ form_send_topic.addEventListener('submit', function(event){
 
 // получаем группы(Устанавливаем глобальный селектор)
 async function getGroups(){
-    const request = await fetch(`http://127.0.0.1:8000/group/getall`);
+    const request = await fetch(`api/group/getall`);
 
     const data = await request.json();
 
@@ -208,7 +208,7 @@ async function getGroups(){
 
 //Получаем группы по ID(Получаем его при переключении свича групп )
 async function getGroup(){
-    const request = await fetch(`http://127.0.0.1:8000/group/get/${select_group.value}`);
+    const request = await fetch(`api/group/get/${select_group.value}`);
 
     const data = await request.json();
     const success = data.success;
@@ -222,7 +222,7 @@ async function getGroup(){
 
 //Получаем набор предметов выбранной группы 
 async function getCourse(group_id){
-    const request = await fetch(`http://127.0.0.1:8000/course/get/${group_id}`);
+    const request = await fetch(`api/course/get/${group_id}`);
 
     const data = await request.json();
 
@@ -254,7 +254,7 @@ async function getCourse(group_id){
 }
 // Получаем все темы выбранного предмета ()
 async function getTopics(){
-    const request = await fetch('http://127.0.0.1:8000/topic/getall');
+    const request = await fetch('api/topic/getall');
 
     const data = await request.json();
     const success = data.success;
@@ -290,7 +290,7 @@ async function getTopics(){
 };
 // Удаляем топик 
 async function deleteTopic(g_id, s_id, t_name){
-    const request = await fetch('http://127.0.0.1:8000/topic/delete', {
+    const request = await fetch('api/topic/delete', {
         method: 'DELETE',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({group_id: g_id, subject_id: s_id, topic: t_name})
@@ -308,7 +308,7 @@ async function addMarks(subject_id, topic, group_id){
         for (i = 0;  i < t_body.rows.length; i++ ){
             send_data.push({"student_id": t_body.rows[i].id, "grade": "0", "subject_id": subject_id, "topic": topic, "group_id": group_id });
         }
-        const request = await fetch('http://127.0.0.1:8000/mark/addall', {
+        const request = await fetch('api/mark/addall', {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({send: send_data})
@@ -319,7 +319,7 @@ async function addMarks(subject_id, topic, group_id){
 };
 // Добавляем темы. Перерисовываем таблицу 
 async function addTopic(group_id, subject_id, topic_name){
-    const request = await fetch('http://127.0.0.1:8000/topic/add',{
+    const request = await fetch('/topic/add',{
         method: 'POST',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({g_id: group_id, s_id: subject_id, t_name: topic_name})
@@ -332,7 +332,7 @@ async function addTopic(group_id, subject_id, topic_name){
 
 
 async function getMarks(){
-    const request = await fetch('http://127.0.0.1:8000//mark/getall');
+    const request = await fetch('api/mark/getall');
 
     const data = await request.json();
     const success = data.success;
@@ -360,7 +360,7 @@ async function getMarks(){
     }
 }
 async function putMark(){
-    const request = await fetch('http://127.0.0.1:8000/mark/patch', {
+    const request = await fetch('api/mark/patch', {
         method: 'PATCH',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({send: update_marks_list}),

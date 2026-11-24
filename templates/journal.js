@@ -4,14 +4,14 @@ const container = document.getElementById("students-list");
 const urlParams = new URLSearchParams(window.location.search);
 const adminLogin = urlParams.get('login');
 const sortButton = document.getElementById("sort_button")
-const = navMenu = document.getClementBySelector('nav')
+const navMenu = document.getClementBySelector('nav')
 navMeny.style.display = 'none'
 sortButton.style.display = 'none'
 
 
 async function loadJournal(){
 // Делаем запрос к API на получения списка студентов
-    const response = await fetch("http://127.0.0.1:8000/me", {
+    const response = await fetch("api/me", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify({ username: adminLogin})
@@ -24,7 +24,7 @@ async function loadJournal(){
         navMeny.style.display = "none";
     }
 
-   const responseList = await fetch("http://127.0.0.1:8000/listJournal", {
+   const responseList = await fetch("api/listJournal", {
         headers: {
         'Content-Type': 'application/json'
         }

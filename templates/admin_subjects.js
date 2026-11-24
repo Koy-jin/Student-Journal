@@ -46,7 +46,7 @@ document.addEventListener('click', event => {
 
 
 async function addSubject(subject){
-    const response = await fetch("http://127.0.0.1:8000/subject/add",{
+    const response = await fetch("api/subject/add",{
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify({subjects: subject})
@@ -58,7 +58,7 @@ async function addSubject(subject){
 };
 
 async function getSubject(){
-    const response = await fetch("http://127.0.0.1:8000/subject/get");
+    const response = await fetch("api/subject/get");
 
     const subjects = await response.json();
     const message = subjects["message"]
@@ -80,7 +80,7 @@ async function getSubject(){
 };
 
 async function deleteSubject(subject_name) {
-    const response = await fetch("http://127.0.0.1:8000/subject/delete", {
+    const response = await fetch("api/subject/delete", {
         method: 'DELETE',
         headers: {"Content-Type": "application/json"}, 
         body: JSON.stringify({name: subject_name})

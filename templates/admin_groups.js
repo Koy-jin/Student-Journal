@@ -110,7 +110,7 @@ courses_form.addEventListener('submit', function(event){
 // Добавляем группу 
 async function add_group(send_group){
     try {
-        const response = await fetch("http://127.0.0.1:8000/group/add", {
+        const response = await fetch("api/group/add", {
             method : "POST",
             headers : {'Content-Type':'application/json'},
             body: JSON.stringify({ groups: send_group})
@@ -134,7 +134,7 @@ async function add_group(send_group){
 // Берем все группы 
 async function get_groups(){
 
-    const response = await fetch("http://127.0.0.1:8000/group/getall");
+    const response = await fetch("api/group/getall");
 
     const data = await response.json();
     const success = data.success;
@@ -148,7 +148,7 @@ async function get_groups(){
 
 // Берем все предметы 
 async function get_subject(){
-    const response = await fetch("http://127.0.0.1:8000/subject/get");
+    const response = await fetch("api/subject/get");
 
     const data = await response.json();
 
@@ -173,7 +173,7 @@ async function get_subject(){
 
 // создаем курс 
 async function addCourses(group_id, subject_id){
-    const response = await fetch("http://127.0.0.1:8000/course/add", {
+    const response = await fetch("apicourse/add", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify({group: group_id, subject: subject_id })
@@ -183,7 +183,7 @@ async function addCourses(group_id, subject_id){
 
 // берем все курсы + группы. В ответе должно быть ID группы, ID, предмета, ID курса, название предмета, название группы 
 async function getCourses(){
-    const response = await fetch("http://127.0.0.1:8000/course/getall");
+    const response = await fetch("api/course/getall");
     const data = await response.json();
 
     const success = data.success;
@@ -207,7 +207,7 @@ async function getCourses(){
 }
 
 async function deletSubjectFromCourse(g_id, s_id) {
-    const response = await fetch("http://127.0.0.1:8000/course/subject/delete", {
+    const response = await fetch("api/course/subject/delete", {
         method: 'DELETE',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({group_id: g_id, subject_id: s_id })
@@ -217,7 +217,7 @@ async function deletSubjectFromCourse(g_id, s_id) {
 }
 
 async function deletGroup(g_id) {
-    const response = await fetch("http://127.0.0.1:8000/group/delete", {
+    const response = await fetch("api/group/delete", {
         method: 'DELETE',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({group_id: g_id})
