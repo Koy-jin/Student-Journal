@@ -1,10 +1,8 @@
-import mysql.connector
-from click import group
-from mysql.connector import pooling
-from mysql.connector.aio import connect
-from sqlalchemy import true
-from sqlalchemy.dialects.oracle.dictionary import dictionary_meta
-from sqlalchemy.engine import connection_memoize
+import os
+from contextlib import contextmanager 
+import psycopg2
+from psycopg2 import pool
+from psycopg2.extras import RealDictCursor
 
 
 class DataBaseWorker:
@@ -12,16 +10,14 @@ class DataBaseWorker:
 
     @classmethod
     def init_pool(cls):
-        db_config = {
-            "host": '127.0.0.1',
-            "user": 'dbworker',
-            "password": 'Maria2001',
-            "database": 'journaldb'
-        }
-        cls._pool = pooling.MySQLConnectionPool(
-            pool_name="flask_pool",
-            pool_size=5,
-            **db_config
+        cls._pool = pool.MySQLConnectionPool(
+            minconn = 1,
+            maxconn = 5,
+            host = os.getenv("DB_HOST"),
+            port = os.getenv("DB_PORT", 5432),
+            user = os.getenv("DB_USER")
+            password = os.getenv("DB_PASSWORD"),
+            dbname = os.getenv("DB_NAME"),
         )
     @classmethod
     def _get_conn(cls):
