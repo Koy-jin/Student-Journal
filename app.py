@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors  import CORS
-from mysql.connector import errors
-from pyexpat.errors import messages
 from flasgger import Swagger
 from db_worker import DataBaseWorker
+import psycopg2
+from psycopg2 import errors
 
 swagger_config = {
     "headers": [],
@@ -140,12 +140,13 @@ def add_group():
     try:
         db_worker.add_group(name1)
         return jsonify({"status":"success"}), 201
-    except errors.IntegrityError as err:
+    except errors.UniqueViolation as err:
         if err.errno == 1062:
             return jsonify({
                 "status": "Conflict",
                 "message": "Такая группа уже сущуствует"
          }), 409
+    except psycopg2.Error:
         return jsonify({"error" : "Bad Request"}), 400
 
 @app.route('/group/getall', methods=['GET'])

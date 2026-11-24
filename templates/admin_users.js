@@ -181,7 +181,7 @@ function showError(inputElement, errorElementId, massage){
 };
 
 async function addUser(login, password, name, role, group){
-    const response = await fetch("api/user/add", {
+    const response = await fetch("/api/user/add", {
     method: "POST",
     headers: { "Content-Type": "application/json"},
     body: JSON.stringify({logins: login, passwords: password, names: name, rols: role, groups: group})
@@ -196,7 +196,7 @@ async function addUser(login, password, name, role, group){
 };
 
 async function getAllUsers(){
-    const response = await fetch("api/user/getall");
+    const response = await fetch("/api/user/getall");
     const user_data = await response.json();
     const success = user_data.success;
     const message = user_data.message;
@@ -211,7 +211,7 @@ async function getAllUsers(){
 };
 
 async function getGroups(){
-        const response = await fetch("api/group/getall");
+        const response = await fetch("/api/group/getall");
 
         const data = await response.json();
 
@@ -231,7 +231,7 @@ async function getGroups(){
 };
 
 async function usersDataUpdate(data) {
-    const response = await fetch("api/user/patchall", {
+    const response = await fetch("/api/user/patchall", {
         method: "PATCH",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({users: data})
@@ -241,7 +241,7 @@ async function usersDataUpdate(data) {
     
 }
 async function userDelete(u_id) {
-    const response = await fetch("api/user/delete",{
+    const response = await fetch("/api/user/delete",{
         method: "DELETE",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({user: u_id})

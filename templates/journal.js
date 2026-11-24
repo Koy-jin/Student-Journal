@@ -11,7 +11,7 @@ sortButton.style.display = 'none'
 
 async function loadJournal(){
 // Делаем запрос к API на получения списка студентов
-    const response = await fetch("api/me", {
+    const response = await fetch("/api/me", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify({ username: adminLogin})
@@ -24,7 +24,7 @@ async function loadJournal(){
         navMeny.style.display = "none";
     }
 
-   const responseList = await fetch("api/listJournal", {
+   const responseList = await fetch("/api/listJournal", {
         headers: {
         'Content-Type': 'application/json'
         }
