@@ -1,0 +1,42 @@
+name: CI Pipeline
+
+on: 
+  push:
+    branches: [ "main"]
+  pull_request:
+    branches: [ "main"]
+
+
+jobs:
+  build-add-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 2. Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 3. Lint Python code with Ruff
+        run: |
+          pip install ruff
+          ruff check . --select E9,F63,F7,F82
+
+      - name: 4. Create test .env file
+        run: cp .env.example .env 
+
+      - name: 5. Build and start Docker Compose
+        run: docker compose up -d --build
+
+      - name: 6. Wait and check endpoints
+        run: | 
+          sleep 10
+          docker compose ps
+          curl -f http://localhost/
+          curl -f http://localhost/apidocs/
+
+      - name: 7. Stop and clean up containers
+        if: always()
+        run: docker compose down -v 
