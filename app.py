@@ -279,3 +279,4 @@ if __name__== '__main__':
     DataBaseWorker.init_pool()
     app.run(host="0.0.0.0", port=8000)
 
+def broken_finc(
