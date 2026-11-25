@@ -173,7 +173,7 @@ async function get_subject(){
 
 // создаем курс 
 async function addCourses(group_id, subject_id){
-    const response = await fetch("/apicourse/add", {
+    const response = await fetch("/api/course/add", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify({group: group_id, subject: subject_id })
